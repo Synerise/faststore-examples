@@ -60,6 +60,16 @@ Begin by defining the new section in the `cms/faststore/sections.json` file. Thi
 ]
 ```
 
-### 2. Create the React Component for the Section
+### 2. Extend the GraphQL Schema for Recommendations
+
+- **Locate the GraphQL Schema Folder**  
+  Identify the location of the `graphql` schema files within your project or the provided resources. Typically, these files are organized in a `graphql` folder, which contains the necessary schema definitions for API extensions.
+
+- **Copy the Schema Files**  
+  Move all files and subdirectories from the `graphql` folder to the `src/graphql` directory of your FastStore application. This directory should match the structure of your project to ensure proper integration.
+
+### 3. Create the React Component for the Section
 
 Create a new React component to implement the section’s logic and visual structure. You can use the @faststore/ui library or custom components to build the section. Ensure the component can accept dynamic data from the configuration.
+
+#### Example: RecommendationShelf.tsx file
