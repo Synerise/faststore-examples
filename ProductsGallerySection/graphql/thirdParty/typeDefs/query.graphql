@@ -1,0 +1,5 @@
+type Query {
+    syneriseAISearch(indexId: String): SyneriseSearchResult!
+}
+
+scalar JSONObject

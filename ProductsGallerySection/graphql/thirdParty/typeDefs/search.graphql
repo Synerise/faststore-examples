@@ -1,0 +1,148 @@
+type Suggestion {
+    text: String!
+    highlighted: String!
+    score: Float!
+}
+
+type SearchExtras {
+    allFacets: JSONObject
+    filteredFacets: JSONObject
+    customFilteredFacets: JSONObject
+    correlationId: String!
+    suggestions: [Suggestion!]!
+    usedSuggestion: Suggestion
+}
+
+enum LinkRel {
+    first,
+    prev,
+    next,
+    last
+}
+
+type Link {
+    rel: LinkRel!
+    url: String!
+}
+
+
+type SyneriseSearchMeta {
+    code: Int
+    limit: Int
+    links: [Link]
+    page: Int
+    totalCount: Int
+    totalPages: Int
+}
+
+enum SyneriseSearchOrdering {
+    ASC,
+    DESC
+}
+
+enum SyneriseSearchIncludeFacets {
+    all,
+    filtered,
+    unfiltered,
+    none
+}
+
+input SyneriseSearchDistinctFilter {
+    attribute: String!
+    maxNumItems: Int!
+    levelRangeModifier: Int
+}
+
+enum SyneriseSearchSortByMetric {
+    TransactionsPopularity,
+    PageVisitsPopularity
+}
+
+type SyneriseSearchResponse {
+    data: [StoreProduct!]
+    extras: SearchExtras
+    meta: SyneriseSearchMeta
+}
+
+type SyneriseSearchResult {
+    search(
+        query: String!
+        page: Int
+        sortBy: String
+        ordering: SyneriseSearchOrdering
+        limit: Int
+        sortByMetric: SyneriseSearchSortByMetric
+        sortByGeoPoints: String
+        filters: String
+        filterGeoPoints: [String]
+        filterAroundRadius: Int
+        filterAnchor: String
+        facets: [String]
+        customFilteredFacets: JSONObject
+        facetsSize: Int
+        maxValuesPerFacet: Int
+        caseSensitiveFacetValues: Boolean
+        includeFacets: SyneriseSearchIncludeFacets
+        distinctFilter: SyneriseSearchDistinctFilter
+        clientUUID: String
+        personalized: Boolean
+        correlationId: String
+        context: [String]
+        displayAttributes: [String]
+        ignoreQueryRules: Boolean
+        excludeQueryRules: [Int]
+    ): SyneriseSearchResponse @cacheControl(scope: "public", sMaxAge: 120, staleWhileRevalidate: 3600)
+    autocomplete(
+        query: String!
+        page: Int
+        sortBy: String
+        limit: Int
+        ordering: SyneriseSearchOrdering
+        sortByMetric: SyneriseSearchSortByMetric
+        sortByGeoPoints: String
+        filters: String
+        filterGeoPoints: [String]
+        filterAroundRadius: Int
+        filterAnchor: String
+        facets: [String]
+        customFilteredFacets: JSONObject
+        facetsSize: Int
+        maxValuesPerFacet: Int
+        caseSensitiveFacetValues: Boolean
+        includeFacets: SyneriseSearchIncludeFacets
+        distinctFilter: SyneriseSearchDistinctFilter
+        clientUUID: String
+        personalized: Boolean
+        correlationId: String
+        context: [String]
+        displayAttributes: [String]
+        ignoreQueryRules: Boolean
+        excludeQueryRules: [Int]
+    ): SyneriseSearchResponse @cacheControl(scope: "public", sMaxAge: 120, staleWhileRevalidate: 3600)
+    listing(
+        page: Int
+        sortBy: String
+        ordering: SyneriseSearchOrdering
+        limit: Int
+        sortByMetric: SyneriseSearchSortByMetric
+        sortByGeoPoints: String
+        filters: String
+        filterGeoPoints: [String]
+        filterAroundRadius: Int
+        filterAnchor: String
+        facets: [String]
+        customFilteredFacets: JSONObject
+        facetsSize: Int
+        maxValuesPerFacet: Int
+        caseSensitiveFacetValues: Boolean
+        includeFacets: SyneriseSearchIncludeFacets
+        distinctFilter: SyneriseSearchDistinctFilter
+        clientUUID: String
+        personalized: Boolean
+        correlationId: String
+        context: [String]
+        displayAttributes: [String]
+        ignoreQueryRules: Boolean
+        excludeQueryRules: [Int]
+    ): SyneriseSearchResponse @cacheControl(scope: "public", sMaxAge: 120, staleWhileRevalidate: 3600)
+}
