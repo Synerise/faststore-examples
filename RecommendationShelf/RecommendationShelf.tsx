@@ -1,19 +1,11 @@
 import React, { useEffect, useRef, useId } from "react";
 import { useInView } from "react-intersection-observer";
-import { usePDP } from "@faststore/core";
+
 import { sendAnalyticsEvent } from "@faststore/sdk";
+import { ProductShelf, Carousel } from "@faststore/ui";
 import { StoreProduct } from "@generated/graphql";
 
-import { useRecommendationsQuery } from "@synerise/faststore-sdk";
-
-import {
-  ProductCard,
-  ProductCardContent,
-  ProductCardImage,
-  ProductShelf,
-  Carousel,
-} from "@faststore/ui";
-import { useFormattedPrice } from "src/sdk/product/useFormattedPrice";
+import ProductShelfSkeleton from "src/components/skeletons/ProductShelfSkeleton";
 
 import {
   RecommendationShelfProps,
@@ -21,6 +13,8 @@ import {
   RecommendationClickEvent,
 } from "./RecommendationShelf.types";
 import styles from "./RecommendationShelf.module.scss";
+import { useRecommendations } from "../hooks";
+import { RecommendationItem } from "./RecommendationItem";
 
 export const RecommendationShelf = ({
   title,
@@ -30,17 +24,14 @@ export const RecommendationShelf = ({
 }: RecommendationShelfProps) => {
   const id = useId();
   const viewedOnce = useRef(false);
-  const { data: contextData } = usePDP();
   const { ref, inView } = useInView();
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 
-  const { data } = useRecommendationsQuery({
-    campaignId,
-    items: contextData?.product?.sku ? [contextData.product.sku] : [],
-  });
+  const { data, loading, error } = useRecommendations({ campaignId });
 
-  const items = data?.syneriseAIRecommendations.recommendations.data || [];
-  const extras = data?.syneriseAIRecommendations.recommendations.extras;
+  const items = data?.syneriseAIRecommendations.recommendations?.data || [];
+  const correlationId =
+    data?.syneriseAIRecommendations.recommendations?.extras.correlationId;
 
   useEffect(() => {
     if (inView && !viewedOnce.current && items.length) {
@@ -48,25 +39,25 @@ export const RecommendationShelf = ({
         name: "recommendation_view",
         params: {
           campaignId,
-          correlationId: extras?.correlationId,
+          correlationId,
           items: items.map((item) => item.sku),
         },
       });
       viewedOnce.current = true;
     }
-  }, [inView, items, campaignId, extras]);
+  }, [inView, items, campaignId]);
 
-  if (items.length === 0) {
+  if (error) {
     return null;
   }
 
-  const handleItemClick = (item: Pick<StoreProduct, "sku">) => {
+  const handleItemClick = (sku: string) => {
     sendAnalyticsEvent<RecommendationClickEvent>({
       name: "recommendation_click",
       params: {
         campaignId,
-        correlationId: extras?.correlationId,
-        item: item.sku,
+        correlationId,
+        item: sku,
       },
     });
   };
@@ -74,48 +65,29 @@ export const RecommendationShelf = ({
   return (
     <section
       ref={ref}
-      className={`${styles.recommendationShelf} section section-product-shelf layout__section`}
+      className={`${styles.recommendationShelf} section-product-shelf layout__section section`}
     >
-      <h2 className="text__title-section layout__content">{title}</h2>
-      <ProductShelf>
-        <Carousel
-          id={id}
-          itemsPerPage={isMobile ? 1 : itemsPerPage}
-          variant="scroll"
-          infiniteMode={false}
-        >
-          {items.map((item) => (
-            <ProductCard
-              key={item.sku}
-              bordered={bordered}
-              onClick={() => handleItemClick(item)}
-            >
-              <ProductCardImage aspectRatio={3 / 4}>
-                <img
-                  data-fs-image
-                  src={item.image[0].url}
-                  alt={item.image[0].alternateName}
-                />
-              </ProductCardImage>
-              <ProductCardContent
-                linkProps={{
-                  size: "regular",
-                  variant: "default",
-                  as: "a",
-                  href: `/${item.slug}/p`,
-                }}
-                title={item.isVariantOf.name}
-                price={{
-                  value: item.offers.offers[0].price,
-                  listPrice: item.offers.offers[0].listPrice,
-                  formatter: useFormattedPrice,
-                }}
+      <ProductShelfSkeleton loading={loading} itemsPerPage={itemsPerPage}>
+        <h2 className="text__title-section layout__content">{title}</h2>
+        <ProductShelf>
+          <Carousel
+            id={id}
+            itemsPerPage={isMobile ? 1 : itemsPerPage}
+            variant="scroll"
+            infiniteMode={false}
+          >
+            {items.map((item) => (
+              <RecommendationItem
+                key={item.isVariantOf.productGroupID}
+                item={item as unknown as StoreProduct}
+                bordered={bordered}
                 showDiscountBadge={showDiscountBadge}
+                onClick={() => handleItemClick(item.isVariantOf.productGroupID)}
               />
-            </ProductCard>
-          ))}
-        </Carousel>
-      </ProductShelf>
+            ))}
+          </Carousel>
+        </ProductShelf>
+      </ProductShelfSkeleton>
     </section>
   );
 };

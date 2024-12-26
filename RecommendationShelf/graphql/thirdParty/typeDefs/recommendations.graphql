@@ -1,62 +1,67 @@
 # RECOMMENDATIONS
 type RecommendationExtras {
-    correlationId: String!
-    contextItems: [ContextItem!]
-    slots: [Slot!]!
+  correlationId: String!
+  contextItems: [ContextItem!]
+  slots: [Slot!]!
 }
 
 type ContextItem {
-    itemId: String!
-    additionalData: JSONObject
+  itemId: String!
+  additionalData: JSONObject
 }
 
 type Slot {
-    id: Int!
-    name: String!
-    itemIds: [String!]!
-    error: SlotError
+  id: Int!
+  name: String!
+  itemIds: [String!]!
+  error: SlotError
 }
 
 type SlotError {
-    status: Int!
-    error: String!
-    message: String!
+  status: Int!
+  error: String!
+  message: String!
 }
 
 input ItemsSourceInput {
-    type: ItemsSourceType!
-    id: String!
+  type: ItemsSourceType!
+  id: String!
 }
 
 enum ItemsSourceType {
-    aggregate
-    expression
+  aggregate
+  expression
 }
 
 enum FilterJoiner {
-    AND
-    OR
-    REPLACE
+  AND
+  OR
+  REPLACE
 }
 
 type SyneriseRecommendationsResponse {
-    data: [StoreProduct!]!
-    extras: RecommendationExtras!
+  data: [StoreProduct!]!
+  extras: RecommendationExtras!
 }
-
 
 type SyneriseRecommendationsResult {
-    recommendations(
-        campaignId: String
-        clientUUID: String
-        items: [String]
-        itemsSource: ItemsSourceInput
-        itemsExcluded: [String]
-        additionalFilters: String
-        filtersJoiner: FilterJoiner
-        additionalElasticFilters: String
-        elasticFiltersJoiner: FilterJoiner
-        displayAttributes: [String]
-        includeContextItems: Boolean
-    ): SyneriseRecommendationsResponse
+  recommendations(
+    campaignId: String
+    clientUUID: String
+    items: [String]
+    itemsSource: ItemsSourceInput
+    itemsExcluded: [String]
+    additionalFilters: String
+    filtersJoiner: FilterJoiner
+    additionalElasticFilters: String
+    elasticFiltersJoiner: FilterJoiner
+    displayAttributes: [String]
+    includeContextItems: Boolean
+  ): SyneriseRecommendationsResponse
 }
+
+type Query {
+  syneriseAIRecommendations(campaignId: String): SyneriseRecommendationsResult!
+}
+
+scalar JSONObject
