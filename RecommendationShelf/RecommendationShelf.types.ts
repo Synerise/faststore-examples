@@ -1,24 +1,24 @@
 export type RecommendationShelfProps = {
-    title: string;
+  title: string;
+  campaignId: string;
+  itemsPerPage: number;
+  shouldFilterByCategory: boolean;
+  productCardConfiguration: {
+    showDiscountBadge: boolean;
+    bordered: boolean;
+  };
+};
+
+export type RecommendationViewEvent = {
+  name: "recommendation_view";
+  params: {
     campaignId: string;
-    itemsPerPage: number;
-    productCardConfiguration: {
-      showDiscountBadge: boolean;
-      bordered: boolean;
-    };
+    correlationId?: string;
+    items: string[];
   };
-  
-  export type RecommendationViewEvent = {
-    name: "recommendation_view";
-    params: {
-      campaignId: string;
-      correlationId?: string;
-      items: string[];
-    };
-  };
-  
-  export type RecommendationClickEvent = {
-    name: "recommendation_click";
-    params: { campaignId: string; correlationId?: string; item: string };
-  };
-  
+};
+
+export type RecommendationClickEvent = {
+  name: "recommendation_click";
+  params: { campaignId: string; correlationId?: string; item: string };
+};

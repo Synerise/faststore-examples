@@ -46,6 +46,8 @@ type SyneriseRecommendationsResponse {
 
 type SyneriseRecommendationsResult {
   recommendations(
+    apiHost: String
+    trackerKey: String
     campaignId: String
     clientUUID: String
     items: [String]
@@ -61,7 +63,11 @@ type SyneriseRecommendationsResult {
 }
 
 type Query {
-  syneriseAIRecommendations(campaignId: String): SyneriseRecommendationsResult!
+  syneriseAIRecommendations(
+    campaignId: String
+    apiHost: String
+    trackerKey: String
+  ): SyneriseRecommendationsResult!
 }
 
 scalar JSONObject

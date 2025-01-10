@@ -8,7 +8,7 @@ import {
 } from "@faststore/ui";
 import { StoreProduct } from "@generated/graphql";
 
-import { useFormattedPrice } from "../hooks";
+import { useFormattedPrice } from 'src/sdk/product/useFormattedPrice'
 
 type RecommendationItemProps = {
   item: StoreProduct;

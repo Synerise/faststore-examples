@@ -1,11 +1,12 @@
 import { gql } from "@generated/gql";
 import { SyneriseRecommendationsQueryQuery } from "@generated/graphql";
 import { useQuery } from "src/sdk/graphql/useQuery";
-import { usePDP } from "@faststore/core";
 
 import { RecommendationsByCampaignRequest } from "@synerise/faststore-api";
 
 const query = gql(`query SyneriseRecommendationsQuery(
+  $apiHost: String,
+  $trackerKey: String
   $campaignId: String,
   $clientUUID: String,
   $items: [String],
@@ -18,7 +19,7 @@ const query = gql(`query SyneriseRecommendationsQuery(
   $displayAttributes: [String],
   $includeContextItems: Boolean
 ) {
-  syneriseAIRecommendations(campaignId: $campaignId) {
+  syneriseAIRecommendations(campaignId: $campaignId, apiHost: $apiHost, trackerKey: $trackerKey) {
     recommendations(
       campaignId: $campaignId,
       clientUUID: $clientUUID,
@@ -95,25 +96,18 @@ const query = gql(`query SyneriseRecommendationsQuery(
 }
 `);
 
-const enhancePayload = (
-  payload: RecommendationsByCampaignRequest,
-  sku?: string
-) => {
+const enhancePayload = (payload: RecommendationsByCampaignRequest) => {
   return {
     ...payload,
-    items: payload.items || sku ? [sku] : [],
+    apiHost: "https://api.synerise.com",
+    trackerKey: "aa689be3-670b-4972-9464-ce6c45d5d3cb",
   };
 };
 
 export const useRecommendations = (
   payload: RecommendationsByCampaignRequest
 ) => {
-  const { data: contextData } = usePDP();
-
-  const enhancedPayload = enhancePayload(
-    payload,
-    contextData?.product.isVariantOf.productGroupID
-  );
+  const enhancedPayload = enhancePayload(payload);
 
   const { data, error } = useQuery<SyneriseRecommendationsQueryQuery>(
     query,

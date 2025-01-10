@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useId } from "react";
 import { useInView } from "react-intersection-observer";
 
+import { usePDP, usePLP } from "@faststore/core";
 import { sendAnalyticsEvent } from "@faststore/sdk";
 import { ProductShelf, Carousel } from "@faststore/ui";
 import { StoreProduct } from "@generated/graphql";
@@ -20,6 +21,7 @@ export const RecommendationShelf = ({
   title,
   itemsPerPage,
   campaignId,
+  shouldFilterByCategory,
   productCardConfiguration: { bordered, showDiscountBadge },
 }: RecommendationShelfProps) => {
   const id = useId();
@@ -27,7 +29,24 @@ export const RecommendationShelf = ({
   const { ref, inView } = useInView();
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 
-  const { data, loading, error } = useRecommendations({ campaignId });
+  const { data: productDetailPage } = usePDP();
+  const { data: productLandingPage } = usePLP();
+
+  const productContext =
+    productDetailPage?.product?.isVariantOf?.productGroupID;
+  const landingContext =
+    productLandingPage?.collection?.meta?.selectedFacets[0]?.value;
+
+  const { data, loading } = useRecommendations({
+    campaignId,
+    ...(productContext ? { items: [productContext] } : {}),
+    ...(shouldFilterByCategory && landingContext
+      ? {
+          additionalFilters: `category=="${landingContext}"`,
+          filtersJoiner: "AND",
+        }
+      : {}),
+  });
 
   const items = data?.syneriseAIRecommendations.recommendations?.data || [];
   const correlationId =
@@ -47,7 +66,7 @@ export const RecommendationShelf = ({
     }
   }, [inView, items, campaignId]);
 
-  if (error) {
+  if (!loading && items.length === 0) {
     return null;
   }
 

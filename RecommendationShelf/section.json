@@ -23,6 +23,12 @@
           "default": 5,
           "description": "Number of items to display per page in carousel"
         },
+        "shouldFilterByCategory": {
+          "title": "Filter by category",
+          "description": "Enable this option to limit the recommendations to items from the same category as the current listing",
+          "type": "boolean",
+          "default": false
+        },
         "productCardConfiguration": {
           "title": "Product Card Configuration",
           "type": "object",
