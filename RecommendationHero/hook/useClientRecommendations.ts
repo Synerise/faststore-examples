@@ -30,7 +30,7 @@ export const useClientRecommendations = (campaignId: string) => {
     const recommendationsClient = SyneriseRecommendationsClient({
       campaignId,
       host: "https://api.synerise.com",
-      trackerKey: "aa689be3-670b-4972-9464-ce6c45d5d3cb",
+      trackerKey: "xxxx-xxxx-xxxx-xxxx",
     });
 
     recommendationsClient
