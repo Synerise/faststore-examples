@@ -99,8 +99,8 @@ const query = gql(`query SyneriseRecommendationsQuery(
 const enhancePayload = (payload: RecommendationsByCampaignRequest) => {
   return {
     ...payload,
-    apiHost: "https://api.synerise.com",
-    trackerKey: "aa689be3-670b-4972-9464-ce6c45d5d3cb",
+    apiHost: "https://example.com",
+    trackerKey: "xxxx-xxxx-xxxx-xxxx",
   };
 };
 
