@@ -4,21 +4,12 @@ This repository provides examples of implementing **Synerise solutions** in the 
 
 ## Libraries Used
 
-This project utilizes the following libraries to achieve seamless integration with Synerise's API and state management:
+This project utilizes the `@synerise/faststore-api` library to achieve integration with Synerise's API:
 
 ### [`@synerise/faststore-api`](https://www.npmjs.com/package/@synerise/faststore-api)
 Provides:
 - Clients for **search** and **recommendation** functionalities.
 - Pre-configured **resolvers** to simplify integration and enhance developer productivity.
-
-### [`@synerise/faststore-sdk`](https://www.npmjs.com/package/@synerise/faststore-sdk)
-Used for:
-- **State management** within the FastStore application.
-- Includes utility functions and hooks for interacting with the API, such as:
-    - `useSearchQuery`
-    - `useSearchListing`
-    - `useSearchAutocomplete`
-- **Important:** These hooks depend on the pre-configured resolvers provided by `@synerise/faststore-api`.
 
 ## How to Use the Libraries
 
