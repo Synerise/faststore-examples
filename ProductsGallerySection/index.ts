@@ -1,1 +1,1 @@
-export * from './ProductGallery'
+export { SyneriseProductGallery } from './SyneriseProductGallery'

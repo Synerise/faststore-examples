@@ -1,25 +1,28 @@
 import {FilterFacetRange} from "@faststore/ui";
-import {useSearchContext} from "@synerise/faststore-sdk";
 
-//@ts-ignore
 import {useFormattedPrice} from "src/sdk/product/useFormattedPrice";
-
+import {SelectedFacetsType} from "../SyneriseProductGallery.types";
 
 type FilterFacetRangeFilterProps = {
     facetName: string;
-    allFacets: Record<string, Record<string, number>>
+    allFacets: Record<string, Record<string, number>>,
+    selectedFacets: SelectedFacetsType
+    onFacetChange: (facetName: string, facetValue: { min: number, max: number }) => void,
 }
 
-export const ProductGalleryRangeFilter = ({facetName, allFacets}: FilterFacetRangeFilterProps) => {
-    const {state: { selectedFacets }, setRangeFacet} = useSearchContext();
-
+function ProductGalleryRangeFilter({
+    facetName,
+    allFacets,
+    selectedFacets,
+    onFacetChange
+}: FilterFacetRangeFilterProps) {
     const facetAllValues = allFacets[facetName];
     const absoluteMin = facetAllValues ? facetAllValues.min : 0;
     const absoluteMax = facetAllValues ? facetAllValues.max : 0;
 
     const rangeFacet = selectedFacets.range[facetName]
 
-    return facetAllValues ? <FilterFacetRange
+    return <FilterFacetRange
         facetKey={facetName}
         min={{
             selected: rangeFacet ? rangeFacet.min : absoluteMin,
@@ -30,12 +33,12 @@ export const ProductGalleryRangeFilter = ({facetName, allFacets}: FilterFacetRan
             absolute: absoluteMax
         }}
         formatter={useFormattedPrice}
-        onFacetChange={(facet) => {
-            const [min, max] = facet.value.split('-to-')
-            setRangeFacet(facet.key, {
-                min: Number(min),
-                max: Number(max)
-            })
+        onFacetChange={({key, value}) => {
+            const [min, max] = value.split('-to-')
+            onFacetChange(key, {min: Number(min), max: Number(max)})
         }}
-    /> : null
+    />
 }
+
+
+export default ProductGalleryRangeFilter;

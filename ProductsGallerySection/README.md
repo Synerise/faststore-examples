@@ -3,6 +3,8 @@
 This guide explains how to create a custom section for showcasing AI-powered search queries using FastStore.
 Example demonstrates how to implement simple search functionality with page prefetching, browser URL changes, filters, and custom facets.
 
+The example was prepared using version `^3.5.0` of Faststore.
+
 ## Steps to Build the Custom Section
 
 VTEX documentation: [Building and Customizing sections](https://developers.vtex.com/docs/guides/faststore/building-sections-creating-a-new-section) 
@@ -22,21 +24,31 @@ Begin by defining the new section in the `cms/faststore/sections.json` file. Thi
       "title": "Synerise Product Gallery",
       "description": "Product Gallery configuration - powered by Synerise",
       "type": "object",
-      "required": [
-        "filters"
-      ],
+      "required": ["indexId", "apiHost", "trackerKey"],
       "properties": {
+        "indexId": {
+          "title": "IndexID",
+          "type": "string"
+        },
+        "apiHost": {
+          "title": "Synerise api host",
+          "type": "string",
+          "enumNames": ["https://api.synerise.com", "https://api.geb.synerise.com"],
+          "enum": ["https://api.synerise.com", "https://api.geb.synerise.com"],
+          "default": "https://api.synerise.com"
+        },
+        "trackerKey": {
+          "title": "Tracker Key",
+          "type": "string"
+        },
         "filters": {
           "title": "Filters",
           "type": "array",
           "items": {
             "title": "Filter",
             "type": "object",
-            "required": [
-              "facetName",
-              "label"
-            ],
-            "properties": {
+            "required": ["facetName", "label"],
+            "properties":{
               "label": {
                 "title": "Label",
                 "type": "string"
@@ -48,16 +60,8 @@ Begin by defining the new section in the `cms/faststore/sections.json` file. Thi
               "facetType": {
                 "title": "Type",
                 "type": "string",
-                "enumNames": [
-                  "Range",
-                  "Text",
-                  "DateTime"
-                ],
-                "enum": [
-                  "Range",
-                  "Text",
-                  "DateTime"
-                ],
+                "enumNames": ["Range", "Text"],
+                "enum": ["Range", "Text"],
                 "default": "Text"
               }
             }
@@ -74,6 +78,10 @@ Begin by defining the new section in the `cms/faststore/sections.json` file. Thi
                 "title": "Label",
                 "type": "string"
               },
+              "key": {
+                "type": "string",
+                "title": "Key e.g price_asc"
+              },
               "sortBy": {
                 "title": "Attribute name",
                 "type": "string"
@@ -81,14 +89,13 @@ Begin by defining the new section in the `cms/faststore/sections.json` file. Thi
               "ordering": {
                 "title": "Ordering",
                 "type": "string",
-                "enumNames": [
-                  "asc",
-                  "desc"
-                ],
-                "enum": [
-                  "asc",
-                  "desc"
-                ]
+                "enumNames": ["asc", "desc"],
+                "enum": ["asc", "desc"]
+              },
+              "isDefault": {
+                "title": "Is default ?",
+                "type": "boolean",
+                "default": false
               }
             }
           }
