@@ -59,7 +59,7 @@ export const RecommendationShelf = ({
         params: {
           campaignId,
           correlationId,
-          items: items.map((item) => item.sku),
+          items: items.map((item) => item.isVariantOf.productGroupID),
         },
       });
       viewedOnce.current = true;
